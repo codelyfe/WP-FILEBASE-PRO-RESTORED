@@ -1,0 +1,20 @@
+{
+  "name": "paper-time-input",
+  "description": "Polymer element to accept a time with paper-input",
+  "main": "paper-time-input.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#1.9 - 2",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#1 - 2",
+    "paper-item": "PolymerElements/paper-item#1 - 2",
+    "paper-listbox": "polymerelements/paper-listbox#1 - 2",
+    "paper-input": "PolymerElements/paper-input#1 - 2",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#1 - 2",
+    "paper-styles": "PolymerElements/paper-styles#1 - 2"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
+    "web-component-tester": "^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+  }
+}

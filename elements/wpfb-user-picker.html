@@ -1,0 +1,60 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-autocomplete/paper-autocomplete.html">
+
+<dom-module id="wpfb-user-picker">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <paper-autocomplete label="[[label]]" remote-source
+                            min-length="2" on-autocomplete-change="autocompleteUsers"
+                            placeholder="" value="{{userLogin}}"
+        ></paper-autocomplete>
+    </template>
+
+    <script>
+        /**
+         *
+         *
+         * @customElement
+         * @polymer
+         */
+        class WpfbUserPicker extends Polymer.Element {
+            static get is() {
+                return 'wpfb-user-picker';
+            }
+
+            static get properties() {
+                return {
+                    userLogin: {
+                        type: String,
+                        value: ''
+                    },
+                    label: String
+                };
+            }
+
+            autocompleteUsers(e) {
+                console.log(e);
+                let inp = e.detail.target;
+                let val = e.detail.value.replace(/\(.+\)?/, '').trim();
+                jQuery.ajax({
+                    url: wpfbConf.ajurl, dataType: "json",
+                    data: {wpfb_action: "usersearch", name_startsWith: val},
+                    success: function (data) {
+                        inp.suggestions(jQuery.map(data, function (user) {
+                            user.toString = (function () {
+                                return this.login;
+                            });
+                            return {text: user.login + " (" + user.name + ")", value: user}
+                        }));
+                    }
+                });
+            }
+        }
+
+        window.customElements.define(WpfbUserPicker.is, WpfbUserPicker);
+    </script>
+</dom-module>

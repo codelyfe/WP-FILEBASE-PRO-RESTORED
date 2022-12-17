@@ -1,0 +1,39 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="wpfb-form-box">
+  <template>
+    <style>
+      :host {
+        display: block;
+        background: white;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        margin-bottom: 40px;
+      }
+    </style>
+    <h2>[[title]]</h2>
+	<slot></slot>
+  </template>
+
+  <script>
+    /**
+     * 
+     *
+     * @customElement
+     * @polymer
+     */
+    class WpfbFormBox extends Polymer.Element {
+      static get is() { return 'wpfb-form-box'; }
+      static get properties() {
+        return {
+          title: {
+            type: String,
+            value: 'element'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(WpfbFormBox.is, WpfbFormBox);
+  </script>
+</dom-module>

@@ -1,0 +1,134 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../bower_components/paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
+
+<link rel="import" href="easy-uploader.html">
+<link rel="import" href="wpfb-form-box.html">
+<link rel="import" href="wpfb-user-picker.html">
+<link rel="import" href="wpfb-user-roles-picker.html">
+<!-- <link rel="import" href="../bower_components/paper-tags/paper-tags-input.html"> -->
+
+<dom-module id="wpfb-file-form">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            :host paper-time-input {
+                display: inline-block;
+                vertical-align: top;
+                margin-left: 3em;
+            }
+        </style>
+        <h2>Hello! [[prop1]]!!</h2>
+
+        <easy-uploader></easy-uploader>
+
+        <wpfb-form-box title="[[t('Label')]]">
+            <paper-input label="[[t('Name')]]" value="asdf"></paper-input>
+            <paper-input label="[[t('Version')]]"></paper-input>
+            <paper-input label="[[t('Author')]]"></paper-input>
+
+            <!--<paper-tags-input label="Tags" placeholder="Please enter the tag" tags="{{tags_list}}"></paper-tags-input>-->
+
+            <!-- <paper-tags-input2 label="Tags" show-counter="tags" items='["hello", "new"]'  maxLength="10"></paper-tags-input2> -->
+            <paper-autocomplete id="tags" label="[[t('Tags')]]" remote-source min-length="1"
+                                on-autocomplete-change="autocompleteTags"
+            ></paper-autocomplete>
+        </wpfb-form-box>
+
+        <wpfb-form-box title="[[t('Label')]]">
+            <vaadin-date-picker label="[[t('Date')]]"></vaadin-date-picker>
+            <!--<paper-date-picker id="date"></paper-date-picker>-->
+            <paper-time-input format="24"></paper-time-input>
+        </wpfb-form-box>
+
+        <wpfb-form-box title="[[t('Access')]]">
+            <paper-checkbox>[[t('Pending Review')]]</paper-checkbox>
+            <paper-input label="[[t('Password')]]"></paper-input>
+            <wpfb-user-picker label="[[t('Owner')]]"></wpfb-user-picker>
+            <wpfb-user-roles-picker label="[[t('Permission')]]"></wpfb-user-roles-picker>
+            <!-- TODO user/role selector -->
+        </wpfb-form-box>
+
+        <wpfb-form-box title="[[t('Description')]]">
+            <paper-textarea label="Description"></paper-textarea>
+        </wpfb-form-box>
+
+        <wpfb-form-box title="[[t('Custom Fields')]]">
+            <!-- TODO -->
+        </wpfb-form-box>
+    </template>
+
+    <script>
+        /**
+         * `wpfb-file-form`
+         *
+         *
+         * @customElement
+         * @polymer
+         */
+        class WpfbFileForm extends Polymer.Element {
+            static get is() {
+                return 'wpfb-file-form';
+            }
+
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'wpfb-file-form'
+                    }
+                };
+            }
+
+
+            ready() {
+                super.ready();
+                console.log("ready", this.$);
+                //this.$.date.minDate = new Date(new Date() - 6e11);
+                //this.$.date.maxDate = new Date(new Date() - (-6e11));
+            }
+
+
+            t(str) {
+                return str;
+            }
+
+
+
+            autocompleteTags(e) {
+                var inp = e.detail.target;
+                var tags = e.detail.value.split(',').map(Function.prototype.call, String.prototype.trim);
+                var val = tags.pop().replace(/\s?\([^),]+\)?/, '').trim();
+
+                jQuery.ajax({
+                    url: wpfbConf.ajurl,
+                    data: {wpfb_action: "tag_autocomplete", "tag": val},
+                    success: (function (data) {
+                        var suggest = [];
+                        for (var i = 0; i < data.length; i++) {
+                            var tn = data[i].t + " (" + data[i].n + ")";
+                            if (tags.indexOf(tn) !== -1) continue;
+                            suggest.push({
+                                text: tags.join(',') + (tags.length ? ", " : " ") + tn + ", ",
+                                value: data[i].t
+                            });
+                        }
+                        inp.suggestions(suggest);
+                    })
+                });
+            }
+        }
+
+        window.customElements.define(WpfbFileForm.is, WpfbFileForm);
+    </script>
+</dom-module>

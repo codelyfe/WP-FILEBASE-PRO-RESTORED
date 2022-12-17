@@ -1,0 +1,36 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-autocomplete/paper-autocomplete.html">
+
+<dom-module id="wp-user-input">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `wp-user-input`
+     * 
+     *
+     * @customElement
+     * @polymer
+     */
+    class WpfbUserInput extends Polymer.Element {
+      static get is() { return 'wp-user-input'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'wp-user-input'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(WpfbUserInput.is, WpfbUserInput);
+  </script>
+</dom-module>

@@ -1,0 +1,8 @@
+{
+    "require": {
+        "james-heinrich/getid3": "^1.9"
+    },
+    "require-dev": {
+        "phpunit/php-code-coverage": "^5.2"
+    }
+}

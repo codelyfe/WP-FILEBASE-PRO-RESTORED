@@ -1,0 +1,44 @@
+{
+  "name": "wp-filebase",
+  "authors": [
+    "Fabian Schlieper <fabian@schlieper.email>"
+  ],
+  "description": "",
+  "main": "elements/index.html",
+  "license": "MIT",
+  "homepage": "https://wpfilebase.com/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "image-picker": "rvera/image-picker",
+    "jquery-deserialize": "kflorence/jquery-deserialize",
+    "polymer": "Polymer/polymer",
+    "paper-input": "^2.0.2",
+    "paper-autocomplete": "^3.1.0",
+    "paper-date-picker": "f4bsch/paper-date-picker#2.0.0",
+    "paper-time-input": "ryanburns23/paper-time-input#^2.0.4",
+    "vaadin-date-picker": "^2.0.2",
+    "paper-checkbox": "^2.0.1"
+  },
+  "ign": {
+    "paper-tags": "PolymerEl/paper-tags#^1.8.1"
+  },
+  "resolutions": {
+    "polymer": "2.0.2",
+    "webcomponentsjs": "^v1.0.2",
+    "paper-input": "^2.0.2",
+    "iron-icons": "^2.0.2",
+    "paper-icon-button": "^2.0.0",
+    "iron-icon": "^2.0.0",
+    "paper-ripple": "^2.0.0",
+    "paper-item": "^2.0.2",
+    "iron-iconset-svg": "^2.0.0",
+    "iron-flex-layout": "^2.0.0"
+  }
+}

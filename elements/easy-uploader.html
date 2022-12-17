@@ -1,0 +1,35 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="easy-uploader">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `easy-uploader`
+     * 
+     *
+     * @customElement
+     * @polymer
+     */
+    class EasyUploader extends Polymer.Element {
+      static get is() { return 'easy-uploader'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'easy-uploader'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(EasyUploader.is, EasyUploader);
+  </script>
+</dom-module>
