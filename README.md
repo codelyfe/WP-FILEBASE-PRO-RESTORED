@@ -1,12 +1,16 @@
-#file_require(!WPFB_PRO)
-WP-Filebase Download Manager
+WP-Filebase Pro Download Manager Unlocked
 ===============================
 
-WP-Filebase (free). This is basically the same version as the one in WordPress [Plugin Directory](https://wordpress.org/plugins/wp-filebase).
-Sometimes fixes are published here first.
+WP-Filebase (free). [Plugin Directory](https://wordpress.org/plugins/wp-filebase) is no longer compatiable / or working.
+
+But...
+
+This version is now working. 
+
+Restored by Codelyfe on 12/16/2022
 
 You can create issues to get help.
 
 Documentation
 -------
-available https://wpfilebase.com/documentation/
+Available Here https://wpfilebase.com/documentation/
