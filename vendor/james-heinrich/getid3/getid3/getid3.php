@@ -156,13 +156,13 @@ class getID3
 			// getID3 cannot run when string functions are overloaded. It doesn't matter if mail() or ereg* functions are overloaded since getID3 does not use those.
 			$this->startup_error .= 'WARNING: php.ini contains "mbstring.func_overload = '.ini_get('mbstring.func_overload').'", getID3 cannot run with this setting (bitmask 2 (string functions) cannot be set). Recommended to disable entirely.'."\n";
 		}
-
+		//CODELYFE-MAGIC-RUNTIME_REMOVE
 		// Check for magic_quotes_runtime
-		if (function_exists('get_magic_quotes_runtime')) {
-			if (get_magic_quotes_runtime()) {
-				$this->startup_error .= 'magic_quotes_runtime must be disabled before running getID3(). Surround getid3 block by set_magic_quotes_runtime(0) and set_magic_quotes_runtime(1).'."\n";
-			}
-		}
+		//if (function_exists('get_magic_quotes_runtime')) {
+		//	if (get_magic_quotes_runtime()) {
+		//		$this->startup_error .= 'magic_quotes_runtime must be disabled before running getID3(). Surround getid3 block by set_magic_quotes_runtime(0) and set_magic_quotes_runtime(1).'."\n";
+		//	}
+		//}
 
 		// Check for magic_quotes_gpc
 		if (function_exists('magic_quotes_gpc')) {

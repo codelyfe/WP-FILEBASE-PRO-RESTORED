@@ -73,16 +73,16 @@ class WPFB_FileUtils
                 break;
 
             case 'pdf':
-                require_once($extras_dir . 'pdf-utils.php');
+                require_once($extras_dir . 'pdf-helper.php');
 
                 if (empty(WPFB_Core::$settings->ghostscript_path) || !pdf_thumb(WPFB_Core::$settings->ghostscript_path, $src_img, $tmp_img)) {
                     if (!empty(WPFB_Core::$settings->ghostscript_path))
-                        WPFB_Core::LogMsg("error: pdf_thumb(" . WPFB_Core::$settings->ghostscript_path . ", {$src_img}, {$tmp_img}) failed!");
+                        WPFB_Core::LogMsg("error1: pdf_thumb(" . WPFB_Core::$settings->ghostscript_path . ", {$src_img}, {$tmp_img}) failed!");
 
                     // Imagick Bug: fails if filename includes utf8 chars?!?
                     $tmp_img = dirname($tmp_img) . '/' . urlencode(str_replace(' ', '_', basename($tmp_img))) . '_thumb.jpg';
                     if (!pdf_thumb_imagick($src_img, $tmp_img)) {
-                        WPFB_Core::LogMsg("error: pdf_thumb(" . WPFB_Core::$settings->ghostscript_path . ", {$src_img}, {$tmp_img}) failed!");
+                        WPFB_Core::LogMsg("error2: pdf_thumb(" . WPFB_Core::$settings->ghostscript_path . ", {$src_img}, {$tmp_img}) failed!");
                         return false;
                     }
 

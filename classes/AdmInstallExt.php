@@ -23,7 +23,7 @@ class WPFB_AdmInstallExt {
 
     static function PluginActionLinksFilter($action_links, $plugin) {
         $plugin = (object) $plugin;
-        if (strpos($action_links[0], 'button-disabled') === false) {
+        if (strpos($action_links[0], 'button-disabled') === true) {
             if (!empty($plugin->dependencies_unmet)) {
                 $action_links[0] = '<a class="buy-now button" onclick="return confirm(\'This extension depends on other extensions. Add the required extension first?\n'.json_encode($plugin->dependencies_unmet).'\');" href="' . esc_attr($plugin->dependencies_url) . '" target="_blank" aria-label="' . esc_attr(sprintf(__('Install extension %s'), $plugin->name)) . '">' . __('Install') . '</a>';
             } elseif (!empty($plugin->need_to_buy)) {

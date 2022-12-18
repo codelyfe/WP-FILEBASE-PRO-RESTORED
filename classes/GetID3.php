@@ -54,7 +54,7 @@ private static function indexDocument($file, &$info, &$times)
 	{
 		$times['pdf_pages'] = microtime(true);
 
-		require_once(WPFB_PLUGIN_ROOT . 'extras/pdf-utils.php');
+		require_once(WPFB_PLUGIN_ROOT . 'extras/pdf-helper.php');
 		$info['pdf'] = array('page_text' => array(), 'extracted_title' => null, 'num_pages' => 1);
 
 		@set_time_limit(10);
