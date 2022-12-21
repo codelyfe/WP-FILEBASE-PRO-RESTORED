@@ -596,10 +596,15 @@ class WPFB_Core
 
     static function CreateTplFunc($parsed_tpl)
     {
-        //CODELYFE-CREATE-FUNCTION_FIX-broken
-        //$e=null;
-        //return function($f,$e) { return ($parsed_tpl); };
+        //CODELYFE-CREATE-FUNCTION_FIX-STILL BROKE
+
+
         return create_function('$f,$e=null', "return ($parsed_tpl);");
+
+        //return function($f,$e=null){
+        //    return ($parsed_tpl);
+        //};
+        
     }
 
     static function CheckPermission($perms, $allow_everyone = false, $user = null)

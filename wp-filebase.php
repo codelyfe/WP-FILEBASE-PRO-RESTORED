@@ -1,12 +1,12 @@
 <?php
 
 /*
-  Plugin Name: WP-Filebase Pro
-  Plugin URI:  https://wpfilebase.com/
-  Description: Adds a powerful downloads manager supporting file categories, download counter, widgets, sorted file lists and more to your WordPress blog.
+  Plugin Name: WP-Filebase Pro Unlocked
+  Plugin URI:  https://wpfilebase.com/documentation/
+  Description: Adds a powerful downloads manager supporting file categories, download counter, widgets, sorted file lists and more to your WordPress blog. The orginal developer no longer supports this plugin. Codelyfe will keep it alive.
   Version:     3.4.32
-  Author:      Fabian Schlieper
-  Author URI:  https://fabi.me/
+  Author:      Fabian Schlieper | Repaired by Codelyfe
+  Author URI:  https://codelyfe.github.io/
   Domain Path: /languages
   Text Domain: wp-filebase
  */

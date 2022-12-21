@@ -1501,11 +1501,18 @@ abstract class WPFB_RemoteSync
 
     protected static function findBy($field_name, $field_value, $items)
     {
-        //CODELYFE-CREATE-FUNCTION-FIX-SOLVE
-        $r = array_filter($items, create_function('$o',
-            'return $o' . (is_object(reset($items)) ? ('->' . $field_name)
-                : ('[\'' . $field_name . '\']')) . ' == \'' . $field_value
-            . '\';'));
+        //CODELYFE-CREATE-FUNCTION-FIX-TESTED
+
+        $this2 = 'return $o' . (is_object(reset($items)) ? ('->' . $field_name) : ('[\'' . $field_name . '\']')) . ' == \'' . $field_value . '\';';
+ 
+        $otherthis = function($o){ $this2; };
+
+        $r = array_filter($items, $otherthis);
+
+        //$r = array_filter($items, create_function('$o',
+        //    'return $o' . (is_object(reset($items)) ? ('->' . $field_name)
+        //        : ('[\'' . $field_name . '\']')) . ' == \'' . $field_value
+        //    . '\';'));
 
         return reset($r);
     }

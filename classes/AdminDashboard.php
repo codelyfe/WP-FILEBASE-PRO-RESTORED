@@ -272,17 +272,10 @@ class WPFB_AdminDashboard
 
     static function WidgetAbout()
     {
-        ?>        <p>
-        <?php echo WPFB_PLUGIN_NAME . ' ' . WPFB_VERSION ?> by Fabian Schlieper <a href="https://fabi.me/">
-            <?php if (strpos($_SERVER['SERVER_PROTOCOL'], 'HTTPS') === false) { ?><img
-                src="https://fabi.me/misc/wpfb_icon.gif?lang=<?php if (defined('WPLANG')) {
-                    echo WPLANG;
-                } ?>" alt="" /><?php } ?> fabi.me</a><br/>
-        Includes the great file analyzer <a href="http://www.getid3.org/">getID3()</a> by James Heinrich.<br/>
-    </p>
+        ?>      
         <?php if (current_user_can('edit_files')) { ?>
-        <p><a href="<?php echo add_query_arg(array('action' => 'enter-license')); ?>"
-                                       class="button"><?php _e('View/Change License Key', 'wp-filebase') ?></a>
+        <p><!--<a href="<?php //echo add_query_arg(array('action' => 'enter-license')); ?>"
+                                       class="button"><?php //_e('View/Change License Key', 'wp-filebase') ?></a>-->
         </p>
         <p><a href="<?php echo admin_url('plugins.php?wpfb-uninstall=1') ?>" class="button"
               onclick="return confirm('You will be brough to the Plugin page. When you disable WP-Filebase there, you loose all your data.')"><?php _e('Initiate a complete uninstall', 'wp-filebase') ?></a>
