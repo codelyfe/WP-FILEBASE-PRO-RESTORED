@@ -79,7 +79,7 @@ class WPFB_Output
                 if ($id > 0 && ($file = wpfb_call('File', 'GetFile', $id)) != null) {
                     if (empty($args['linktext']))
                         return $file->GetUrl();
-                    if (($new_tab = ($args['linktext']{0} == '*')))
+                    if (($new_tab = ($args['linktext'][0] == '*')))
                         $args['linktext'] = substr($args['linktext'], 1);
                     return '<a href="' . $file->GetUrl() . '" ' . ($new_tab ? 'target="_blank"' : '') . '>' . $args['linktext'] . '</a>';
                 } else
@@ -750,7 +750,7 @@ var wpfb_dlCountdownInterval = setInterval(function(){
         $names = array();
         if (!empty($roles)) {
             foreach ($roles as $role) {
-                if (strlen($role) > 3 && $role{0} == '_' && $role{1} == 'u')
+                if (strlen($role) > 3 && $role[0] == '_' && $role[1] == 'u')
                     $names[$role] = '<b>' . substr($role, 3) . '</b>';
                 else
                     $names[$role] = empty($wp_roles->roles[$role]['name']) ? $role : translate_user_role($wp_roles->roles[$role]['name']);

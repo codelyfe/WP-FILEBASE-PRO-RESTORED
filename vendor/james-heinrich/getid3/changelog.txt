@@ -2520,7 +2520,7 @@ Version History
    ID3v1 track number only returned if greater than zero
    Removed !== FALSE (introduced in 1.4.0b6) from while(fread()) loops,
      some users were reporting problems with that syntax.
-   Changed substr($string, 0, 1) to $string{0} syntax in most files
+   Changed substr($string, 0, 1) to $string[0] syntax in most files
    Reformatted changelog.txt to 72-column width
 
 

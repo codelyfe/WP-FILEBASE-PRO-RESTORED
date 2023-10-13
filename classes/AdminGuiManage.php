@@ -302,11 +302,11 @@ class WPFB_AdminGuiManage
                     $perms = array_unique(array_merge(WPFB_Core::$settings->perm_upload_files, WPFB_Core::$settings->perm_frontend_upload));
                     
                     //CODELYFE-CREATE-FUNCTION_FIX
-                    $cfunadmin = function($r) { echo 'return $r{0}!=\'_\';'; };
+                    $cfunadmin = function($r) { echo 'return $r[0]!=\'_\';'; };
                     $roles = array_filter($perms, $cfunadmin); // filter users
                     $user_perms = array_diff($perms, $roles);
                     
-                    //$roles = array_filter($perms, create_function('$r', 'return $r{0}!=\'_\';')); // filter users
+                    //$roles = array_filter($perms, create_function('$r', 'return $r[0]!=\'_\';')); // filter users
                     //$user_perms = array_diff($perms, $roles);
 
                     foreach ($roles as $role) {

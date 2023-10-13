@@ -36,7 +36,7 @@ class getid3_apetag extends getid3_handler
 			$this->fseek(0 - $id3v1tagsize - $apetagheadersize - $lyrics3tagsize, SEEK_END);
 			$APEfooterID3v1 = $this->fread($id3v1tagsize + $apetagheadersize + $lyrics3tagsize);
 
-			//if (preg_match('/APETAGEX.{24}TAG.{125}$/i', $APEfooterID3v1)) {
+			//if (preg_match('/APETAGEX.{24}TAG.[125]$/i', $APEfooterID3v1)) {
 			if (substr($APEfooterID3v1, strlen($APEfooterID3v1) - $id3v1tagsize - $apetagheadersize, 8) == 'APETAGEX') {
 
 				// APE tag found before ID3v1
@@ -150,7 +150,7 @@ class getid3_apetag extends getid3_handler
 			switch (strtolower($item_key)) {
 				// http://wiki.hydrogenaud.io/index.php?title=ReplayGain#MP3Gain
 				case 'replaygain_track_gain':
-					if (preg_match('#^[\\-\\+][0-9\\.,]{8}$#', $thisfile_ape_items_current['data'][0])) {
+					if (preg_match('#^[\\-\\+][0-9\\.,][8]$#', $thisfile_ape_items_current['data'][0])) {
 						$thisfile_replaygain['track']['adjustment'] = (float) str_replace(',', '.', $thisfile_ape_items_current['data'][0]); // float casting will see "0,95" as zero!
 						$thisfile_replaygain['track']['originator'] = 'unspecified';
 					} else {
@@ -159,7 +159,7 @@ class getid3_apetag extends getid3_handler
 					break;
 
 				case 'replaygain_track_peak':
-					if (preg_match('#^[0-9\\.,]{8}$#', $thisfile_ape_items_current['data'][0])) {
+					if (preg_match('#^[0-9\\.,][8]$#', $thisfile_ape_items_current['data'][0])) {
 						$thisfile_replaygain['track']['peak']       = (float) str_replace(',', '.', $thisfile_ape_items_current['data'][0]); // float casting will see "0,95" as zero!
 						$thisfile_replaygain['track']['originator'] = 'unspecified';
 						if ($thisfile_replaygain['track']['peak'] <= 0) {
@@ -171,7 +171,7 @@ class getid3_apetag extends getid3_handler
 					break;
 
 				case 'replaygain_album_gain':
-					if (preg_match('#^[\\-\\+][0-9\\.,]{8}$#', $thisfile_ape_items_current['data'][0])) {
+					if (preg_match('#^[\\-\\+][0-9\\.,][8]$#', $thisfile_ape_items_current['data'][0])) {
 						$thisfile_replaygain['album']['adjustment'] = (float) str_replace(',', '.', $thisfile_ape_items_current['data'][0]); // float casting will see "0,95" as zero!
 						$thisfile_replaygain['album']['originator'] = 'unspecified';
 					} else {
@@ -180,7 +180,7 @@ class getid3_apetag extends getid3_handler
 					break;
 
 				case 'replaygain_album_peak':
-					if (preg_match('#^[0-9\\.,]{8}$#', $thisfile_ape_items_current['data'][0])) {
+					if (preg_match('#^[0-9\\.,][8]$#', $thisfile_ape_items_current['data'][0])) {
 						$thisfile_replaygain['album']['peak']       = (float) str_replace(',', '.', $thisfile_ape_items_current['data'][0]); // float casting will see "0,95" as zero!
 						$thisfile_replaygain['album']['originator'] = 'unspecified';
 						if ($thisfile_replaygain['album']['peak'] <= 0) {
@@ -192,7 +192,7 @@ class getid3_apetag extends getid3_handler
 					break;
 
 				case 'mp3gain_undo':
-					if (preg_match('#^[\\-\\+][0-9]{3},[\\-\\+][0-9]{3},[NW]$#', $thisfile_ape_items_current['data'][0])) {
+					if (preg_match('#^[\\-\\+][0-9][3],[\\-\\+][0-9][3],[NW]$#', $thisfile_ape_items_current['data'][0])) {
 						list($mp3gain_undo_left, $mp3gain_undo_right, $mp3gain_undo_wrap) = explode(',', $thisfile_ape_items_current['data'][0]);
 						$thisfile_replaygain['mp3gain']['undo_left']  = intval($mp3gain_undo_left);
 						$thisfile_replaygain['mp3gain']['undo_right'] = intval($mp3gain_undo_right);
@@ -203,7 +203,7 @@ class getid3_apetag extends getid3_handler
 					break;
 
 				case 'mp3gain_minmax':
-					if (preg_match('#^[0-9]{3},[0-9]{3}$#', $thisfile_ape_items_current['data'][0])) {
+					if (preg_match('#^[0-9][3],[0-9][3]$#', $thisfile_ape_items_current['data'][0])) {
 						list($mp3gain_globalgain_min, $mp3gain_globalgain_max) = explode(',', $thisfile_ape_items_current['data'][0]);
 						$thisfile_replaygain['mp3gain']['globalgain_track_min'] = intval($mp3gain_globalgain_min);
 						$thisfile_replaygain['mp3gain']['globalgain_track_max'] = intval($mp3gain_globalgain_max);
@@ -213,7 +213,7 @@ class getid3_apetag extends getid3_handler
 					break;
 
 				case 'mp3gain_album_minmax':
-					if (preg_match('#^[0-9]{3},[0-9]{3}$#', $thisfile_ape_items_current['data'][0])) {
+					if (preg_match('#^[0-9][3],[0-9][3]$#', $thisfile_ape_items_current['data'][0])) {
 						list($mp3gain_globalgain_album_min, $mp3gain_globalgain_album_max) = explode(',', $thisfile_ape_items_current['data'][0]);
 						$thisfile_replaygain['mp3gain']['globalgain_album_min'] = intval($mp3gain_globalgain_album_min);
 						$thisfile_replaygain['mp3gain']['globalgain_album_max'] = intval($mp3gain_globalgain_album_max);

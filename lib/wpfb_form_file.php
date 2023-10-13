@@ -566,7 +566,7 @@ WPFB_Admin::PrintAdminSchemeCss();
         $custom_fields = WPFB_Core::GetCustomFields(false, $custom_defaults);
         foreach ($custom_fields as $ct => $cn) {
             $hid = 'file_custom_' . esc_attr($ct);
-            //$isSelect = trim($custom_defaults[$ct]){0} == '['; // this fails on php <= 5.6
+            //$isSelect = trim($custom_defaults[$ct])[0] == '['; // this fails on php <= 5.6
             $isSelect = substr(trim($custom_defaults[$ct]), 0,1) == '[';
             ?>
             <tr class="form-field">

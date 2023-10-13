@@ -169,7 +169,7 @@ class WPFB_Item
         // fix ASC/DESC indicators
         $order_sql = str_replace(self::$shortcodeSortDirIndS, self::$shortcodeSortDirIndR, $order_sql);
 
-        if (($desc = ($order_sql{0} == '>')) || $order_sql{0} == '<')
+        if (($desc = ($order_sql[0] == '>')) || $order_sql[0] == '<')
             $on = substr($order_sql, 1);
         else {
             $p = strpos($order_sql, ','); // strip multi order clauses
@@ -225,10 +225,10 @@ class WPFB_Item
             $sort = substr($sort, 0, $p);
 
         $desc = $for_cat ? WPFB_Core::$settings->filelist_sorting_dir : false;
-        if ($sort && $sort{0} == '<') {
+        if ($sort && $sort[0] == '<') {
             $desc = false;
             $sort = substr($sort, 1);
-        } elseif ($sort && $sort{0} == '>') {
+        } elseif ($sort && $sort[0] == '>') {
             $desc = true;
             $sort = substr($sort, 1);
         }
@@ -457,7 +457,7 @@ class WPFB_Item
         }
         if ($rel) {
             $url = substr($url, strlen(home_url()));
-            if ($url{0} == '?')
+            if ($url[0] == '?')
                 $url = 'index.php' . $url;
             else
                 $url = substr($url, 0); // remove trailing slash! TODO?!
@@ -820,9 +820,9 @@ class WPFB_Item
                         $i++;
                         if ($this->is_file) {
                             $p = strrpos($name, '.');
-                            $this->file_name = ($p <= 0) ? "{$name}_{$i}" : (substr($name, 0, $p) . "_$i" . substr($name, $p));
+                            $this->file_name = ($p <= 0) ? "{$name}_[$i]" : (substr($name, 0, $p) . "_$i" . substr($name, $p));
                         } else
-                            $this->cat_folder = "{$name}_{$i}";
+                            $this->cat_folder = "{$name}_[$i]";
 
                         $new_path_rel = $this->GetLocalPathRel(true);
                         $new_path = $this->GetLocalPath();

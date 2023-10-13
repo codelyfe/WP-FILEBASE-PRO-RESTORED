@@ -199,7 +199,7 @@ class WPFB_FTPSync extends WPFB_RemoteSync {
 				$f->size = $raw[1];
 				$f->mtime = strtotime($raw[2]);
 				$f->path = $root_path.$raw[3];
-				$f->is_dir = (strtolower($r{0}) == 'd');
+				$f->is_dir = (strtolower($r[0]) == 'd');
 				$files[] = $f;
 			}		
 		}

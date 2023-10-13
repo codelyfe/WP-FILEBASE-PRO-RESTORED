@@ -820,7 +820,7 @@ class phpthumb_bmp {
 		$byteword = strrev($byteword);
 		$bytewordlen = strlen($byteword);
 		for ($i = 0; $i < $bytewordlen; $i++) {
-			$intvalue += ord($byteword{$i}) * pow(256, ($bytewordlen - 1 - $i));
+			$intvalue += ord($byteword[$i]) * pow(256, ($bytewordlen - 1 - $i));
 		}
 		return $intvalue;
 	}
@@ -833,7 +833,7 @@ class phpthumb_bmp {
 		$binvalue = '';
 		$bytewordlen = strlen($byteword);
 		for ($i = 0; $i < $bytewordlen; $i++) {
-			$binvalue .= str_pad(decbin(ord($byteword{$i})), 8, '0', STR_PAD_LEFT);
+			$binvalue .= str_pad(decbin(ord($byteword[$i])), 8, '0', STR_PAD_LEFT);
 		}
 		return $binvalue;
 	}
@@ -846,7 +846,7 @@ class phpthumb_bmp {
 	function Bin2Dec($binstring, $signed=false) {
 		$signmult = 1;
 		if ($signed) {
-			if ($binstring{0} == '1') {
+			if ($binstring[0] == '1') {
 				$signmult = -1;
 			}
 			$binstring = substr($binstring, 1);

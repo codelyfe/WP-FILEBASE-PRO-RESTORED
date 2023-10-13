@@ -199,7 +199,7 @@ class getID3
 							$lines = explode("\n", $dir_listing);
 							foreach ($lines as $line) {
 								$line = trim($line);
-								if (preg_match('#^([0-9/]{10}) +([0-9:]{4,5}( [AP]M)?) +(<DIR>|[0-9,]+) +([^ ]{0,11}) +(.+)$#', $line, $matches)) {
+								if (preg_match('#^([0-9/][10]) +([0-9:]{4,5}( [AP]M)?) +(<DIR>|[0-9,]+) +([^ ]{0,11}) +(.+)$#', $line, $matches)) {
 									list($dummy, $date, $time, $ampm, $filesize, $shortname, $filename) = $matches;
 									if ((strtoupper($filesize) == '<DIR>') && (strtolower($filename) == strtolower($value))) {
 										$value = $shortname;
@@ -379,8 +379,8 @@ class getID3
 				$header = fread($this->fp, 10);
 				if ((substr($header, 0, 3) == 'ID3') && (strlen($header) == 10)) {
 					$this->info['id3v2']['header']        = true;
-					$this->info['id3v2']['majorversion']  = ord($header{3});
-					$this->info['id3v2']['minorversion']  = ord($header{4});
+					$this->info['id3v2']['majorversion']  = ord($header[3]);
+					$this->info['id3v2']['minorversion']  = ord($header[4]);
 					$this->info['avdataoffset']          += getid3_lib::BigEndian2Int(substr($header, 6, 4), 1) + 10; // length of ID3v2 tag in 10-byte header doesn't include 10-byte header length
 				}
 			}
@@ -587,7 +587,7 @@ class getID3
 /*
 				// AA   - audio       - Audible Audiobook
 				'aa'   => array(
-							'pattern'   => '^.{4}\x57\x90\x75\x36',
+							'pattern'   => '^.[4]\x57\x90\x75\x36',
 							'group'     => 'audio',
 							'module'    => 'aa',
 							'mime_type' => 'audio/audible',
@@ -866,7 +866,7 @@ class getID3
 
 				// QT   - audio/video - Quicktime
 				'quicktime' => array(
-							'pattern'   => '^.{4}(cmov|free|ftyp|mdat|moov|pnot|skip|wide)',
+							'pattern'   => '^.[4](cmov|free|ftyp|mdat|moov|pnot|skip|wide)',
 							'group'     => 'audio-video',
 							'module'    => 'quicktime',
 							'mime_type' => 'video/quicktime',
@@ -1028,7 +1028,7 @@ class getID3
 
 				// TAR  - data        - TAR compressed data
 				'tar'  => array(
-							'pattern'   => '^.{100}[0-9\x20]{7}\x00[0-9\x20]{7}\x00[0-9\x20]{7}\x00[0-9\x20\x00]{12}[0-9\x20\x00]{12}',
+							'pattern'   => '^.{100}[0-9\x20][7]\x00[0-9\x20][7]\x00[0-9\x20][7]\x00[0-9\x20\x00][12][0-9\x20\x00][12]',
 							'group'     => 'archive',
 							'module'    => 'tar',
 							'mime_type' => 'application/x-tar',

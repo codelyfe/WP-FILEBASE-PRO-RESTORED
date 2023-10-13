@@ -112,7 +112,7 @@ class getid3_quicktime extends getid3_handler
 				$latitude  = false;
 				$longitude = false;
 				$altitude  = false;
-				if (preg_match('#^([\\+\\-])([0-9]{2}|[0-9]{4}|[0-9]{6})(\\.[0-9]+)?([\\+\\-])([0-9]{3}|[0-9]{5}|[0-9]{7})(\\.[0-9]+)?(([\\+\\-])([0-9]{3}|[0-9]{5}|[0-9]{7})(\\.[0-9]+)?)?/$#', $ISO6709string, $matches)) {
+				if (preg_match('#^([\\+\\-])([0-9][2]|[0-9][4]|[0-9][6])(\\.[0-9]+)?([\\+\\-])([0-9][3]|[0-9][5]|[0-9][7])(\\.[0-9]+)?(([\\+\\-])([0-9][3]|[0-9][5]|[0-9][7])(\\.[0-9]+)?)?/$#', $ISO6709string, $matches)) {
 					@list($dummy, $lat_sign, $lat_deg, $lat_deg_dec, $lon_sign, $lon_deg, $lon_deg_dec, $dummy, $alt_sign, $alt_deg, $alt_deg_dec) = $matches;
 
 					if (strlen($lat_deg) == 2) {        // [+-]DD.D
@@ -1362,7 +1362,7 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 					&& ($chapter_string_length = getid3_lib::BigEndian2Int(substr($atom_data, $mdat_offset, 2)))
 					&& ($chapter_string_length < 1000)
 					&& ($chapter_string_length <= (strlen($atom_data) - $mdat_offset - 2))
-					&& preg_match('#^([\x00-\xFF]{2})([\x20-\xFF]+)$#', substr($atom_data, $mdat_offset, $chapter_string_length + 2), $chapter_matches)) {
+					&& preg_match('#^([\x00-\xFF][2])([\x20-\xFF]+)$#', substr($atom_data, $mdat_offset, $chapter_string_length + 2), $chapter_matches)) {
 						list($dummy, $chapter_string_length_hex, $chapter_string) = $chapter_matches;
 						$mdat_offset += (2 + $chapter_string_length);
 						@$info['quicktime']['comments']['chapters'][] = $chapter_string;

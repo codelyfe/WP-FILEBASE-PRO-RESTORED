@@ -125,7 +125,7 @@ private static function indexDocument($file, &$info, &$times)
 			$times['xml2txt'] = microtime(true);
 			if ($ext == "pptx" || $ext == "pptm") {
 				$i = 1;
-				while (is_file($sf = $zres['dir'] . "/ppt/slides/slide{$i}.xml")) {
+				while (is_file($sf = $zres['dir'] . "/ppt/slides/slide[$i].xml")) {
 					$info[$ext]['slide_text'][$i] = self::xml2Text(file_get_contents($sf));
 					$i++;
 				}
@@ -335,8 +335,8 @@ private static function indexDocument($file, &$info, &$times)
 			if (is_array($val) || is_object($val))
 				self::cleanInfoByRef($info[$key]);
 			else if (is_string($val)) {
-				$a = ord($val{0});
-				if ($a < 32 || $a > 126 || $val{0} == '?' || strpos($val, chr(01)) !== false || strpos($val, chr(0x09)) !== false) {  // check for binary data
+				$a = ord($val[0]);
+				if ($a < 32 || $a > 126 || $val[0] == '?' || strpos($val, chr(01)) !== false || strpos($val, chr(0x09)) !== false) {  // check for binary data
 					unset($info[$key]);
 					continue;
 				}

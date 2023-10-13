@@ -183,7 +183,7 @@ class WPFB_EmbeddedForm {
                 unset($extra_data['cat'], $extra_data['form'], $extra_data['form_tag'], $extra_data['frontend_upload'], $extra_data['overwrite'], $extra_data['prefix']);
 
                 foreach ($extra_data as $name => $data) {
-                    if ($name{0} == '_' || (strpos($name, 'file_') === 0 && strpos($name, 'custom') === false) || strpos($name, 'submit') === 0 || strpos($name, 'nonce') === 0 || strpos($name, 'wpfb') === 0)
+                    if ($name[0] == '_' || (strpos($name, 'file_') === 0 && strpos($name, 'custom') === false) || strpos($name, 'submit') === 0 || strpos($name, 'nonce') === 0 || strpos($name, 'wpfb') === 0)
                         continue;
                     $file_more_data .= __(__(WPFB_Output::Filename2Title(str_replace('-', '_', $name)), 'wp-filebase')) . "\r\n" . (is_array($data) ? var_dump($data, true) : $data) . "\r\n\r\n";
                 }
