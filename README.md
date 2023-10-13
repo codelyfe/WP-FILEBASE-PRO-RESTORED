@@ -11,6 +11,10 @@ Restored by Codelyfe on 12/16/2022
 
 You can create issues to get help.
 
+Fixes:
+-------
+Works with PHP 8.0.1 + 
+
 Documentation
 -------
 Available Here https://wpfilebase.com/documentation/
