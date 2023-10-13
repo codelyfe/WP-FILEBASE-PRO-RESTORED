@@ -13,7 +13,8 @@ You can create issues to get help.
 
 Fixes:
 -------
-Works with PHP 8.0.1 + 
+Works with PHP 8.0.1 + (Date Fixed: 11/12/23)
+Trouble uploading files (Date Fixed: 11/12/23)
 
 Documentation
 -------
