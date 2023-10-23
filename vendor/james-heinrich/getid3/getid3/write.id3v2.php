@@ -1787,7 +1787,7 @@ class getid3_write_id3v2
 		$unsyncheddata = '';
 		$datalength = strlen($data);
 		for ($i = 0; $i < $datalength; $i++) {
-			$thischar = $data[$i];
+			$thischar = $data{$i};
 			$unsyncheddata .= $thischar;
 			if ($thischar == "\xFF") {
 				$nextchar = ord($data{$i + 1});

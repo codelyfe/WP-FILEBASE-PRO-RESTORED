@@ -551,7 +551,7 @@ abstract class WPFB_RemoteSync
      *
      * @return WPFB_RemoteFileInfo[]
      */
-    final private function &getFileTree(
+    private function &getFileTree(
         $path,
         $depth = 0,
         $progress_callback = false,
@@ -601,7 +601,7 @@ abstract class WPFB_RemoteSync
         $this->CloseConnection();
     }
 
-    private final function createDirStructure($remote_path)
+    private function createDirStructure($remote_path)
     {
         $fullpath = "";
         foreach (array_filter(explode("/", $remote_path)) as $part) {
@@ -1111,7 +1111,7 @@ abstract class WPFB_RemoteSync
     /**
      * @return int[]
      */
-    private final function getLocalFileIds()
+    private function getLocalFileIds()
     {
         global $wpdb;
         return $wpdb->get_col($wpdb->prepare(
@@ -1127,7 +1127,7 @@ abstract class WPFB_RemoteSync
      * @return WPFB_LocalFileState
      * @throws RemoteSyncException
      */
-    private final function getLocalFileState($path_rel, $rfi)
+    private function getLocalFileState($path_rel, $rfi)
     {
         global $wpdb;
 
@@ -1158,7 +1158,7 @@ abstract class WPFB_RemoteSync
     /**
      * @param int[] $file_ids
      */
-    final private function removeLocalFiles($file_ids)
+    private function removeLocalFiles($file_ids)
     {
         $this->progress_reporter && $this->progress_reporter->InitProgress(count($file_ids));
         foreach ($file_ids as $id) {
@@ -1168,7 +1168,7 @@ abstract class WPFB_RemoteSync
         }
     }
 
-    final private function removeEmptyCategories()
+    private function removeEmptyCategories()
     {
         if (($cat = $this->GetCat())) {
             $cats = $cat->GetChildCats(true);
@@ -1501,21 +1501,13 @@ abstract class WPFB_RemoteSync
 
     protected static function findBy($field_name, $field_value, $items)
     {
-        //CODELYFE-CREATE-FUNCTION-FIX-TESTED
-
-        $this2 = 'return $o' . (is_object(reset($items)) ? ('->' . $field_name) : ('[\'' . $field_name . '\']')) . ' == \'' . $field_value . '\';';
- 
-        $otherthis = function($o){ $this2; };
-
-        $r = array_filter($items, $otherthis);
-
-        //$r = array_filter($items, create_function('$o',
-        //    'return $o' . (is_object(reset($items)) ? ('->' . $field_name)
-        //        : ('[\'' . $field_name . '\']')) . ' == \'' . $field_value
-        //    . '\';'));
-
+        $r = array_filter($items, function($o) use ($field_name, $field_value) {
+            return $o instanceof YourClass ? $o->$field_name === $field_value : $o[$field_name] === $field_value;
+        });
+    
         return reset($r);
     }
+    
 
     function __toString()
     {

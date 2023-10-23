@@ -182,10 +182,10 @@ class WPFB_Item
         $on = preg_replace('/[^0-9a-z_]/i', '', $on); //strip hacking
         if (empty($on)) return;
         $comparer = $desc ? "return -strcmp(\$a->{$on},\$b->{$on});" : "return strcmp(\$a->{$on},\$b->{$on});";
-        //usort($items, create_function('$a,$b', $comparer));
-        //CODELYFE-CREATE-FUNCTION_FIX
-        $cfunthis = function($a,$b) { echo $comparer; };
-        usort($items, $cfunthis);
+        usort($items, function($a, $b) use ($comparer) {
+            return $comparer($a, $b);
+        });
+        
     }
 
     /**
@@ -625,9 +625,10 @@ class WPFB_Item
     {
         static $parent_walker = false;
         if (!$parent_walker)
-            //CODELYFE-CREATE-FUNCTION_FIX
-            //$parent_walker = create_function('&$f,$fid,$pid', 'if($f->file_category != $pid) $f = null;');
-            $parent_walker = function(&$f,$fid,$pid) {if($f->file_category != $pid) $f = null;};
+            $parent_walker = function(&$f, $fid, $pid) {
+                if($f->file_category != $pid) $f = null;
+            };
+        
 
         if ($this->is_file)
             return array($this->GetId() => $this);
@@ -820,9 +821,9 @@ class WPFB_Item
                         $i++;
                         if ($this->is_file) {
                             $p = strrpos($name, '.');
-                            $this->file_name = ($p <= 0) ? "{$name}_[$i]" : (substr($name, 0, $p) . "_$i" . substr($name, $p));
+                            $this->file_name = ($p <= 0) ? "{$name}_{$i}" : (substr($name, 0, $p) . "_$i" . substr($name, $p));
                         } else
-                            $this->cat_folder = "{$name}_[$i]";
+                            $this->cat_folder = "{$name}_{$i}";
 
                         $new_path_rel = $this->GetLocalPathRel(true);
                         $new_path = $this->GetLocalPath();

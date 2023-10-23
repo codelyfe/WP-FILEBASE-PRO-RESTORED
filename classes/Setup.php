@@ -836,15 +836,12 @@ Your browser does not support the video tag.  <a href='%file_url%'>Open Video di
         foreach ($paths as $p) {
             if (($d = strpos($p, '|')) > 0) {
                 $gs_exe = substr($p, $d + 1);
-                //CODELYFE-CREATE-FUNC_FIX
-
-                $cfunrr = function($p) { return (substr($p,-' . strlen($gs_exe) . ')=="' . $gs_exe . '"); };
-                $files = array_filter(list_files(substr($p, 0, $d)), $cfunrr);
-
-                //$files = array_filter(list_files(substr($p, 0, $d)), create_function('$p', 'return (substr($p,-' . strlen($gs_exe) . ')=="' . $gs_exe . '");'));
+                $files = array_filter(list_files(substr($p, 0, $d)), function($p) use ($gs_exe) {
+                    return (substr($p, -strlen($gs_exe)) == $gs_exe);
+                });
                 if (empty($files)) continue;
                 $p = reset($files);
-            }
+            }            
             $out_return_val = 0;
             $out = array();
             @exec("\"$p\" -sDEVICE=jpeg -c quit", $out, $out_return_val);

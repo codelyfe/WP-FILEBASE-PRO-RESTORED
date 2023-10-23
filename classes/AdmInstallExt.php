@@ -23,7 +23,7 @@ class WPFB_AdmInstallExt {
 
     static function PluginActionLinksFilter($action_links, $plugin) {
         $plugin = (object) $plugin;
-        if (strpos($action_links[0], 'button-disabled') === true) {
+        if (strpos($action_links[0], 'button-disabled') === false) {
             if (!empty($plugin->dependencies_unmet)) {
                 $action_links[0] = '<a class="buy-now button" onclick="return confirm(\'This extension depends on other extensions. Add the required extension first?\n'.json_encode($plugin->dependencies_unmet).'\');" href="' . esc_attr($plugin->dependencies_url) . '" target="_blank" aria-label="' . esc_attr(sprintf(__('Install extension %s'), $plugin->name)) . '">' . __('Install') . '</a>';
             } elseif (!empty($plugin->need_to_buy)) {
@@ -65,13 +65,13 @@ class WPFB_AdmInstallExt {
     static function Display() {
         add_filter('plugins_api', array(__CLASS__, 'PluginsApiFilter'), 10, 3);
         add_filter('plugin_install_action_links', array(__CLASS__, 'PluginActionLinksFilter'), 10, 2);
-        //CODELYFE-CREATE-FUNCTION_FIX
-        $twister = function($tabs){$tabs[]="new";return $tabs;};
-        add_filter('install_plugins_nonmenu_tabs', $twister);
-
-        //add_filter('install_plugins_nonmenu_tabs', create_function('$tabs', '$tabs[]="new";return $tabs;'));
+        add_filter('install_plugins_nonmenu_tabs', function($tabs) {
+            $tabs[] = "new";
+            return $tabs;
+        });
         self::DisplayInstallPlugins();
     }
+    
 
     static function DisplayInstallPlugins() {
         if (!current_user_can('install_plugins'))

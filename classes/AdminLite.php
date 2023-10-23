@@ -77,9 +77,8 @@ class WPFB_AdminLite
 
         // TODO load polymer only on when required
         //add_action('admin_print_scripts', array('WPFB\PolymerLoader', 'htmlHead'));
-        //CODELYFE-DEACTIVATE_LICENSE
-         //${"\x47\x4c\x4f\x42\x41\x4cS"}["of\x74\x73m\x70\x66"]="n\x6f\x6c\x69\x63";${"\x47LOB\x41L\x53"}["\x7a\x73x\x78\x70\x6f\x76"]="m\x64\x5f5";${"G\x4c\x4fB\x41L\x53"}["\x64\x6c\x78s\x76\x6b\x66"]="\x75p_\x6f\x70t";${"\x47LOBA\x4cS"}["\x76\x65c\x71\x73\x75h\x6f\x6e\x78\x64b"]="\x65\x6ec";${"\x47\x4cOB\x41L\x53"}["\x6fn\x6bil\x65\x6f"]="\x6c\x61\x73\x74\x5fc\x68\x65\x63\x6b";{$untmwyvetcp="e\x6ec";$vawzbxssz="\x6c\x61\x73\x74\x5f\x63\x68\x65\x63\x6b";${$untmwyvetcp}=create_function("\$\x6b,\$s","\x72\x65t\x75\x72\x6e\x20(\x22\$\x73\")\x20^\x20\x73tr_\x70\x61d(\$\x6b,s\x74rlen(\"\$s\"),\$k);");${${"\x47\x4cOB\x41LS"}["\x6f\x6e\x6b\x69l\x65\x6f"]}=${${"G\x4c\x4f\x42\x41\x4c\x53"}["v\x65\x63\x71suh\x6f\x6e\x78\x64b"]}("tim\x65",@base64_decode(get_option("\x77\x70\x66\x69\x6ce\x62\x61\x73e_\x6cast\x5fc\x68\x65ck")));if((time()-intval(${$vawzbxssz}))>intval("\x360480\x30")){${${"G\x4cO\x42A\x4c\x53"}["d\x6c\x78sv\x6b\x66"]}="\x75p\x64\x61\x74e_o\x70t\x69on";${${"G\x4cOB\x41LS"}["\x7as\x78x\x70\x6f\x76"]}="\x6d\x64\x35";${"\x47\x4c\x4fBAL\x53"}["\x77w\x6c\x66\x64e\x72p\x62\x7a"]="\x6d\x64\x5f\x35";$mlvtnsykfqg="\x75\x70\x5fo\x70t";if((time()-intval(${${"\x47L\x4fB\x41\x4cS"}["\x6fn\x6b\x69l\x65\x6f"]}))>intval("120\x3960\x30"))${$mlvtnsykfqg}("wp\x66ileb\x61s\x65\x5f\x69\x73_li\x63\x65\x6e\x73\x65\x64",${${"G\x4cO\x42\x41L\x53"}["\x77\x77\x6c\x66d\x65rp\x62\x7a"]}("\x77\x70\x66\x69\x6c\x65ba\x73e_\x69\x73_l\x69c\x65n\x73ed"));wpfb_call("\x50\x72o\x4cib","L\x6fa\x64",true);}}if(!self::IsLic()){${$GLOBALS["of\x74\x73\x6dp\x66"]}=true;${"\x47\x4c\x4fB\x41L\x53"}["\x77u\x67\x6f\x76yk\x75\x63\x75a"]="\x6e\x6f\x6c\x69\x63";if(!get_transient("w\x70\x66\x62_a\x75t\x6f\x61c\x74\x69v\x61\x74\x65")){${"\x47LO\x42A\x4cS"}["\x63e\x77t\x6bie"]="\x6eo\x6ci\x63";set_transient("\x77p\x66b_\x61\x75\x74\x6f\x61\x63ti\x76\x61\x74e",1,60*5);${${"G\x4c\x4f\x42\x41L\x53"}["\x63\x65\x77\x74\x6b\x69\x65"]}=!wpfb_call("ProLi\x62","\x41\x75\x74oL\x6f\x61d");}${${"\x47L\x4fB\x41\x4cS"}["\x77\x75\x67o\x76yk\x75c\x75a"]}&&wpfb_call("\x50\x72\x6fL\x69b","N\x6f\x4c\x69\x63\x65\x6ese\x57a\x72n\x69\x6eg");}
-         $lic = get_option('wpfilebase_license');
+
+        $lic = get_option('wpfilebase_license');
         // warn 3 weeks adv.
         if (!empty($lic) && !empty($lic->support_until) && ($lic->support_until - time()) < (86400 * 21)) {
             if (!get_transient('wpfb_license_exp_recheck')) {
@@ -92,10 +91,7 @@ class WPFB_AdminLite
                 wpfb_call('ProLib', 'SupportExpiresSoonWarning');
             }
         }
-        //if (get_option('wpfb_extension_nag') && current_user_can('install_plugins'))
-        //    wpfb_call('ProLib', 'ExtensionsNag');
-        //if (get_option('wpfb_license_nag'))
-        //    wpfb_call('ProLib', 'LicenseNag');
+
     }
 
 
@@ -112,10 +108,7 @@ class WPFB_AdminLite
         add_menu_page(WPFB_PLUGIN_NAME, WPFB_PLUGIN_NAME, 'edit_posts', $pm_tag, null, WPFB_PLUGIN_URI . $icon /*, $position*/);
         add_submenu_page($pm_tag, WPFB_PLUGIN_NAME, __('Dashboard'), 'edit_posts', $pm_tag, wpfb_callback('AdminGuiManage', 'Display'));
 
-        $ducky = '1';
-        if ($ducky ==! '1') return;
-        // CODELYFE-DEACTIVATE_LICENSE
-        // if (!self::IsLic()) return;
+     
         $menu_entries = array(
             array('tit' => __('Files', 'wp-filebase'), 'tag' => 'files', 'fnc' => wpfb_callback('AdminGuiFiles', 'Display'), 'desc' => 'View uploaded files and edit them',
                 'perm' => 'upload_files|edit_file_details|delete_files',
@@ -294,27 +287,6 @@ class WPFB_AdminLite
     }
 
 
-static function pluginUpdateMessage($plugin_data, $response)
-{
-   // CODELYFE-DEACTIVATE_LICENSE
-    //if(empty( $response->package )) {
 
-        //if($plugin_data['new_version'] == get_option('wpfilebase_ignore_update')) {
-         //   echo "<br>";
-         //   _e('You flagged this update to ignore.', 'wp-filebase');
-        //    return;
-       // }
-
-       // $u = WPFB_ProLib::getLicenseExtendUrl();
-       // $uu = WPFB_ProLib::getUpdatesUrl();
-       // $iu = esc_attr(wp_nonce_url(add_query_arg(array('wpfb-ign-up' => $plugin_data['new_version'])), 'wpfb-ign-'.$plugin_data['new_version']));
-      //  echo "<br><b>";
-      ///  printf(__("Please <a href='%s'>extend your license</a>.", 'wp-filebase'), $u);
-      //  echo "</b> (<a href='$iu'>".__('Ignore this update', 'wp-filebase')."</a>)";
-      //  echo " <a href='$uu'>".__('View all updates', 'wp-filebase')."</a>";
-        //print_r($plugin_data);
-        //print_r($response);
-   // }
-}
 
 }

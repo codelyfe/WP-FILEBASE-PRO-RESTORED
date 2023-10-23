@@ -417,10 +417,22 @@ class WPFB_Ajax
         $rsync = WPFB_RemoteSync::GetSync($args['rsync_id']);
         if (empty($rsync))
             exit;
-        //CODELYFE-CREATE-FUNCTION_FIX-MAY-BREAK
-        //add_filter('wp_die_ajax_handler', create_function('$v', 'return "' . create_function('$msg', 'if(empty($msg)) die(); @header ("HTTP/1.1 200 OK"); wp_send_json(array(array(\'id\' => \'\', \'text\'=> \'<b>ERROR</b>: \'.$msg, \'classes\' => \'empty\', \'hasChildren\' => false )));') . '";'));
 
-
+            add_filter('wp_die_ajax_handler', function($v) {
+                return function($msg) {
+                    if(empty($msg)) die(); 
+                    @header ("HTTP/1.1 200 OK"); 
+                    wp_send_json(array(
+                        array(
+                            'id' => '',
+                            'text' => '<b>ERROR</b>: ' . $msg,
+                            'classes' => 'empty',
+                            'hasChildren' => false
+                        )
+                    ));
+                };
+            });
+            
         $root_path = (empty($args['root']) || $args['root'] == 'source') ? '/' : $args['root'];
         $onclick = empty($args['onclick']) ? '' : $args['onclick'];
         $dirs_only = !empty($args['dirs_only']) && $args['dirs_only'] !== 'false';

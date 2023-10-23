@@ -64,12 +64,12 @@ class WPFB_Search
             $s = esc_sql(stripslashes($s));
             if ($sentence)
                 $search_terms = array($s);
-            else {
-                preg_match_all('/".*?("|$)|((?<=[\\s",+])|^)[^\\s",+]+/', $s, $matches);
-                //CODELYFE-CREATE-FUNCTION_FIX
-                $search_terms = array_filter(array_map( function($a) { return trim($a, "\"'\n\r "); }, $matches[0] ));
-                //$search_terms = array_map(create_function('$a', 'return trim($a, "\\"\'\\n\\r ");'), $matches[0]);
-            }
+                else {
+                    preg_match_all('/".*?("|$)|((?<=[\s",+])|^)[^\s",+]+/', $s, $matches);
+                    $search_terms = array_map(function($a) {
+                        return trim($a, "\"'\n\r ");
+                    }, $matches[0]);
+                }                
         }
         return $search_terms;
     }

@@ -540,12 +540,9 @@ class WPFB_CCron
         );
 
         register_shutdown_function(array(__CLASS__, 'onShutdownPHP'), $worker);
-
-        //CODELYFE-CREATE-FUNCTION_FIX
-        $onWPdied = function() { return array("' . __CLASS__ . '", "onWPDie"); };
-        add_filter('wp_die_handler', $onWPdied);
-
-        //add_filter('wp_die_handler', create_function('', 'return array("' . __CLASS__ . '", "onWPDie");'));
+        add_filter('wp_die_handler', function() {
+            return array(__CLASS__, 'onWPDie');
+        });
 
         if (!ini_get('safe_mode')) {
             set_time_limit(self::WORKER_REQUEST_TIME_LIMIT);

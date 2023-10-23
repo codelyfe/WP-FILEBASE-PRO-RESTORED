@@ -246,14 +246,14 @@ class WPFB_Admin
 
         $secondary_categories = array();
         for ($i = 1; $i <= 3; $i++) { // TODO: update secondary cats file counter!
-            $vn = "file_sec_cat[$i]";
+            $vn = "file_sec_cat{$i}";
             if (!empty($data->$vn) && $data->$vn != $data->file_category && !is_null(WPFB_Category::GetCat($data->$vn))) // don't allow primary cats to be also secondary
                 $secondary_categories[] = (int)$data->$vn;
         }
         $secondary_categories = array_filter(array_unique($secondary_categories));
 
         for ($i = 1; $i <= 3; $i++) { // TODO: update secondary cats file counter!
-            $vn = "file_sec_cat[$i]";
+            $vn = "file_sec_cat{$i}";
             $sec_cat_id = empty($secondary_categories[$i - 1]) ? 0 : $secondary_categories[$i - 1];
 
             // dont need to do anything if not changed!

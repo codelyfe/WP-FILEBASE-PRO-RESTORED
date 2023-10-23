@@ -151,13 +151,12 @@ class getID3
 			$this->warning('WARNING: php.ini contains "mbstring.func_overload = '.ini_get('mbstring.func_overload').'", this may break things.');
 		}
 
-		//CODELYFE-MAGIC-RUNTIME_REMOVE
 		// Check for magic_quotes_runtime
-		//if (function_exists('get_magic_quotes_runtime')) {
-		//	if (get_magic_quotes_runtime()) {
-		//		$this->startup_error .= 'magic_quotes_runtime must be disabled before running getID3(). Surround getid3 block by set_magic_quotes_runtime(0) and set_magic_quotes_runtime(1).'."\n";
-		//	}
-		//}
+		if (version_compare(PHP_VERSION, '7.4.0', '<') && function_exists('get_magic_quotes_runtime')) {
+			if (get_magic_quotes_runtime()) {
+				return $this->startup_error('magic_quotes_runtime must be disabled before running getID3(). Surround getid3 block by set_magic_quotes_runtime(0) and set_magic_quotes_runtime(1).');
+			}
+		}		
 
 		// Check for magic_quotes_gpc
 		if (function_exists('magic_quotes_gpc')) {

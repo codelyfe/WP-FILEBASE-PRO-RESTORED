@@ -677,7 +677,7 @@ class getid3_mp3 extends getid3_handler
 				if ($thisfile_mpeg_audio['xing_flags']['toc']) {
 					$LAMEtocData = substr($headerstring, $VBRidOffset + 16, 100);
 					for ($i = 0; $i < 100; $i++) {
-						$thisfile_mpeg_audio['toc'][$i] = ord($LAMEtocData[$i]);
+						$thisfile_mpeg_audio['toc'][$i] = ord($LAMEtocData{$i});
 					}
 				}
 				if ($thisfile_mpeg_audio['xing_flags']['vbr_scale']) {
@@ -1242,7 +1242,7 @@ class getid3_mp3 extends getid3_handler
 			}
 			if ($head4[0] != "\xFF") {
 				for ($i = 1; $i < 4; $i++) {
-					if ($head4[$i] == "\xFF") {
+					if ($head4{$i} == "\xFF") {
 						$this->fseek($i - 4, SEEK_CUR);
 						continue 2;
 					}

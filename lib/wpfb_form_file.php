@@ -507,7 +507,14 @@ WPFB_Admin::PrintAdminSchemeCss();
         <tr class="form-field">
             <th scope="row" valign="top"><label for="file_tags"><?php _e('Tags') ?></label></th>
             <td colspan="3"><input name="file_tags" id="file_tags" type="text"
-                                   value="<?php echo esc_attr(trim($file->file_tags, ',')); ?>"
+                                   value="<?php
+                                            if ($file->file_tags !== null) {
+                                                $trimmed_tags = trim($file->file_tags, ',');
+                                                echo 'value="' . esc_attr($trimmed_tags) . '"';
+                                            } else {
+                                                echo 'value="'; 
+                                            }
+                                            ?>"
                                    size="<?php echo ($in_editor || $in_widget) ? 20 : 40 ?>" maxlength="250"
                                    autocomplete="off"/></td>
         </tr>
@@ -573,7 +580,11 @@ WPFB_Admin::PrintAdminSchemeCss();
                 <th scope="row" valign="top"><label for="<?php echo $hid; ?>"><?php echo esc_html($cn) ?></label></th>
                 <td colspan="3">
                     <?php if ($isSelect) {
-                        $cfsel = array_map('trim', explode(',', $file->$hid));
+                        if ($file->$hid !== null) {
+                            $cfsel = array_map('trim', explode(',', $file->$hid));
+                        } else {
+                            $cfsel = []; // or whatever default value you want to assign
+                        }
                         ?>
                         <select name="<?php echo $hid; ?>[]" size="40" multiple="multiple" id="<?php echo $hid; ?>[]"
                                 style="height: 80px;">

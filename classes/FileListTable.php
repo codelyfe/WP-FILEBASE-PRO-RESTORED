@@ -226,11 +226,10 @@ class WPFB_FileListTable extends WP_List_Table
 
         // filter files current user can edit
         /* @var $files WPFB_File[] */
-        //CODELYFE-CREATE-FUNCTION_FIX
-        //$files = isset($_REQUEST['file']) ? array_filter(array_map(array('WPFB_File', 'GetFile'), $_REQUEST['file']), create_function('$file', 'return ($file && $file->CurUserCan' . ($this->current_action() === 'delete' ? 'Delete' : 'Edit') . '());')) : array();
-		$createfuncreplace2 = function($file) { return ($file && $file->CurUserCanEdit()); };
-		$files = isset($_REQUEST['file']) ? array_filter(array_map(array('WPFB_File', 'GetFile'), $_REQUEST['file']), $createfuncreplace2) : array();
-
+        $files = isset($_REQUEST['file']) ? array_filter(array_map(['WPFB_File', 'GetFile'], $_REQUEST['file']), function($file) {
+            return ($file && $file->CurUserCan($this->current_action() === 'delete' ? 'Delete' : 'Edit'));
+        }) : [];
+        
         $message = null;
         switch ($this->current_action()) {
             case 'delete':

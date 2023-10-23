@@ -669,10 +669,10 @@ var wpfb_dlCountdownInterval = setInterval(function(){
             add_filter('the_content', array(__CLASS__, 'GeneratePageContentFilter'), 10);
         } else {
             add_filter('the_posts', array(__CLASS__, 'GeneratePagePostFilter'), 9, 2);
-            //CODELYFE-CREATE-FUNCTION_FIX
-            $cfun = function() { return; };
-            add_filter('edit_post_link', $cfun); // hide edit link
-            //add_filter('edit_post_link', create_function('', 'return "";')); // hide edit link
+            add_filter('edit_post_link', function() {
+                return "";
+            });
+            
         }
     }
 
@@ -809,10 +809,10 @@ var wpfb_dlCountdownInterval = setInterval(function(){
         $nonce_action = "$prefix=";
         if (!empty($secret_key))
             $nonce_action .= $secret_key;
-        //CODELYFE-CREATE-FUNCTION_FIX-NOT-TESTED
-        $cfunanother= function($v) { return !(is_object($v) || is_array($v)); };
-        $hidden_vars = array_filter($hidden_vars, $cfunanother);
-        //$hidden_vars = array_filter($hidden_vars, create_function('$v', 'return !(is_object($v) || is_array($v));'));
+
+            $hidden_vars = array_filter($hidden_vars, function($v) {
+                return !(is_object($v) || is_array($v));
+            });            
 
         foreach ($hidden_vars as $n => $v) {
             echo '<input type="hidden" name="' . esc_attr($n) . '" value="' . esc_attr($v) . '" id="' . $prefix . esc_attr($n) . '" />';

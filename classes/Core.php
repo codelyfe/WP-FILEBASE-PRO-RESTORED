@@ -267,8 +267,7 @@ class WPFB_Core
 
         //print_r($query);
 
-        $filepage_query = (isset($query->query_vars['post_type']) && $query->query_vars['post_type'] == 'wpfb_filepage' || isset($query->tax_query->queried_terms['wpfb_file_category']));
-
+        $filepage_query = ($query->query_vars['post_type'] == 'wpfb_filepage' || isset($query->tax_query->queried_terms['wpfb_file_category']));
 
         if (WPFB_Core::$settings->search_integration && !empty($wp_query->query_vars['s'])) {
             wpfb_loadclass('Search');
@@ -597,15 +596,9 @@ class WPFB_Core
 
     static function CreateTplFunc($parsed_tpl)
     {
-        //CODELYFE-CREATE-FUNCTION_FIX-STILL BROKE
-
-
-        return create_function('$f,$e=null', "return ($parsed_tpl);");
-
-        //return function($f,$e=null){
-        //    return ($parsed_tpl);
-        //};
-        
+        return function($f, $e = null) use ($parsed_tpl) {
+            return eval($parsed_tpl);
+        };
     }
 
     static function CheckPermission($perms, $allow_everyone = false, $user = null)

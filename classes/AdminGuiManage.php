@@ -32,7 +32,14 @@ class WPFB_AdminGuiManage
         if (wp_is_mobile())
             wp_enqueue_script('jquery-touch-punch');
 
-        //register_shutdown_function( create_function('','$error = error_get_last(); if( $error && $error[\'type\'] != E_STRICT ){print_r( $error );}else{return true;}') );
+           // register_shutdown_function(function() {
+           //     $error = error_get_last();
+           //     if ($error && $error['type'] != E_STRICT) {
+           //         print_r($error);
+           //     } else {
+           //         return true;
+           //     }
+           // });
 
         wpfb_loadclass('File', 'Category', 'Admin', 'Output');
 
@@ -300,14 +307,10 @@ class WPFB_AdminGuiManage
                     $all_users = array();
 
                     $perms = array_unique(array_merge(WPFB_Core::$settings->perm_upload_files, WPFB_Core::$settings->perm_frontend_upload));
-                    
-                    //CODELYFE-CREATE-FUNCTION_FIX
-                    $cfunadmin = function($r) { echo 'return $r[0]!=\'_\';'; };
-                    $roles = array_filter($perms, $cfunadmin); // filter users
+                    $roles = array_filter($perms, function($r) {
+                        return $r[0] != '_';
+                    });
                     $user_perms = array_diff($perms, $roles);
-                    
-                    //$roles = array_filter($perms, create_function('$r', 'return $r[0]!=\'_\';')); // filter users
-                    //$user_perms = array_diff($perms, $roles);
 
                     foreach ($roles as $role) {
                         $all_users = array_merge($all_users, get_users(array('role' => $role)));

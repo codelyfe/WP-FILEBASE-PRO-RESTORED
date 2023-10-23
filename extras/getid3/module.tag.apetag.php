@@ -36,7 +36,7 @@ class getid3_apetag extends getid3_handler
 			$this->fseek(0 - $id3v1tagsize - $apetagheadersize - $lyrics3tagsize, SEEK_END);
 			$APEfooterID3v1 = $this->fread($id3v1tagsize + $apetagheadersize + $lyrics3tagsize);
 
-			//if (preg_match('/APETAGEX.{24}TAG.[125]$/i', $APEfooterID3v1)) {
+			//if (preg_match('/APETAGEX.{24}TAG.{125}$/i', $APEfooterID3v1)) {
 			if (substr($APEfooterID3v1, strlen($APEfooterID3v1) - $id3v1tagsize - $apetagheadersize, 8) == 'APETAGEX') {
 
 				// APE tag found before ID3v1

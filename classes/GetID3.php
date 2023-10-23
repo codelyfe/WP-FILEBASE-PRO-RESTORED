@@ -54,7 +54,7 @@ private static function indexDocument($file, &$info, &$times)
 	{
 		$times['pdf_pages'] = microtime(true);
 
-		require_once(WPFB_PLUGIN_ROOT . 'extras/pdf-helper.php');
+		require_once(WPFB_PLUGIN_ROOT . 'extras/pdf-utils.php');
 		$info['pdf'] = array('page_text' => array(), 'extracted_title' => null, 'num_pages' => 1);
 
 		@set_time_limit(10);
@@ -125,7 +125,7 @@ private static function indexDocument($file, &$info, &$times)
 			$times['xml2txt'] = microtime(true);
 			if ($ext == "pptx" || $ext == "pptm") {
 				$i = 1;
-				while (is_file($sf = $zres['dir'] . "/ppt/slides/slide[$i].xml")) {
+				while (is_file($sf = $zres['dir'] . "/ppt/slides/slide{$i}.xml")) {
 					$info[$ext]['slide_text'][$i] = self::xml2Text(file_get_contents($sf));
 					$i++;
 				}
@@ -380,14 +380,10 @@ private static function indexDocument($file, &$info, &$times)
 			return null;
 		}
 
-		//CODELYFE-CREATE-FUNCTION_FIX
-
-		$cff2 = function($fn) { return substr($fn,' . strlen($dir) . '); };
-		$files = array_map($cff2, list_files($dir));
-
-		//$files = array_map(create_function('$fn', 'return substr($fn,' . strlen($dir) . ');'), list_files($dir));
-
-
+		$files = array_map(function($fn) use ($dir) {
+			return substr($fn, strlen($dir));
+		}, list_files($dir));
+		
 		$result = array('dir' => $dir, 'files' => $files);
 		return $result;
 	}

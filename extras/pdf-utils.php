@@ -185,21 +185,140 @@ function wpfb_getDirtyTexts(&$texts, $textContainers) {
             $texts = array_merge($texts, @$parts[1]);
     }
 }
+function wpfb_getCharTransformations(&$transformations,$stream){
+    preg_match_all("#([0-9]+)\s+beginbfchar(.*)endbfchar#ismU",$stream,$chars,PREG_SET_ORDER);
+    preg_match_all("#([0-9]+)\s+beginbfrange(.*)endbfrange#ismU",$stream,$ranges,PREG_SET_ORDER);
+    for($j=0;$j<count($chars);$j++){
+        $count=$chars[$j][1];
+        $current=explode("\n",trim($chars[$j][2]));
+        for($k=0;$k<$count&&$k<count($current);$k++){
+            if(preg_match("#<([0-9a-f]{2,4})>\s+<([0-9a-f]{4,512})>#is",trim($current[$k]),$map))
+                $transformations[str_pad($map[1],4,"0")]=$map[2];
+        }
+    }
+    for($j=0;$j<count($ranges);$j++){
+        $count=$ranges[$j][1];
+        $current=explode("\n",trim($ranges[$j][2]));
+        for($k=0;$k<$count&&$k<count($current);$k++){
+            if(preg_match("#<([0-9a-f][4])>\s+<([0-9a-f][4])>\s+<([0-9a-f][4])>#is",trim($current[$k]),$map)){
+                $from=hexdec($map[1]);
+                $to=hexdec($map[2]);
+                $_from=hexdec($map[3]);
+                for($m=$from,$n=0;$m<=$to;$m++,$n++)
+                    $transformations[sprintf("%04X",$m)]=sprintf("%04X",$_from+$n);
+            } elseif(preg_match("#<([0-9a-f][4])>\s+<([0-9a-f][4])>\s+\[(.*)\]#ismU",trim($current[$k]),$map)){
+                $from=hexdec($map[1]);
+                $to=hexdec($map[2]);
+                $parts=preg_split("#\s+#",trim($map[3]));
+                for($m=$from,$n=0;$m<=$to&&$n<count($parts);$m++,$n++)
+                    $transformations[sprintf("%04X",$m)]=sprintf("%04X",hexdec($parts[$n]));
+            }
+        }
+    }
+}
 
-  //CODELYFE-CREATE-FUNCTION_FIX-MAY-BREAK-HERE
-  //function wpfb_getCharTransformations(&$transformations,$stream){preg_match_all("#([0-9]+)\s+beginbfchar(.*)endbfchar#ismU",$stream,$chars,PREG_SET_ORDER);preg_match_all("#([0-9]+)\s+beginbfrange(.*)endbfrange#ismU",$stream,$ranges,PREG_SET_ORDER);for($j=0;$j<count($chars);$j++){$count=$chars[$j][1];$current=explode("\n",trim($chars[$j][2]));for($k=0;$k<$count&&$k<count($current);$k++){if(preg_match("#<([0-9a-f]{2,4})>\s+<([0-9a-f]{4,512})>#is",trim($current[$k]),$map))$transformations[str_pad($map[1],4,"0")]=$map[2];}}for($j=0;$j<count($ranges);$j++){$count=$ranges[$j][1];$current=explode("\n",trim($ranges[$j][2]));for($k=0;$k<$count&&$k<count($current);$k++){if(preg_match("#<([0-9a-f][4])>\s+<([0-9a-f][4])>\s+<([0-9a-f][4])>#is",trim($current[$k]),$map)){$from=hexdec($map[1]);$to=hexdec($map[2]);$_from=hexdec($map[3]);for($m=$from,$n=0;$m<=$to;$m++,$n++)$transformations[sprintf("%04X",$m)]=sprintf("%04X",$_from+$n);}elseif(preg_match("#<([0-9a-f][4])>\s+<([0-9a-f][4])>\s+\[(.*)\]#ismU",trim($current[$k]),$map)){$from=hexdec($map[1]);$to=hexdec($map[2]);$parts=preg_split("#\s+#",trim($map[3]));for($m=$from,$n=0;$m<=$to&&$n<count($parts);$m++,$n++)$transformations[sprintf("%04X",$m)]=sprintf("%04X",hexdec($parts[$n]));}}}}function wpfb_getTextUsingTransformations($texts,$transformations){$document="";for($i=0;$i<count($texts);$i++){$isHex=false;$isPlain=false;$hex="";$plain="";for($j=0;$j<strlen($texts[$i]);$j++){$c=$texts[$i][$j];switch($c){case "<":$hex="";$isHex=true;break;case ">":$hexs=str_split($hex,4);for($k=0;$k<count($hexs);$k++){$chex=str_pad($hexs[$k],4,"0");if(isset($transformations[$chex]))$chex=$transformations[$chex];$document.=html_entity_decode("&#x".$chex.";");}$isHex=false;break;case "(":$plain="";$isPlain=true;break;case ")":$document.=$plain;$isPlain=false;break;case "\\":$c2=$texts[$i][$j+1];if(in_array($c2,array("\\","(",")")))$plain.=$c2;elseif($c2=="n")$plain.='\n';elseif($c2=="r")$plain.='\r';elseif($c2=="t")$plain.='\t';elseif($c2=="b")$plain.='\b';elseif($c2=="f")$plain.='\f';elseif($c2>='0'&&$c2<='9'){$oct=preg_replace("#[^0-9]#","",substr($texts[$i],$j+1,3));$j+=strlen($oct)-1;$plain.=html_entity_decode("&#".octdec($oct).";");}$j++;break;default:if($isHex)$hex.=$c;if($isPlain)$plain.=$c;break;}}$document.="\n";}return $document;}function pdf2text($filename){$infile=@file_get_contents($filename,FILE_BINARY);if(empty($infile))return "";$transformations=array();$texts=array();preg_match_all("#obj(.*)endobj#ismU",$infile,$objects);$objects=@$objects[1];for($i=0;$i<count($objects);$i++){$currentObject=$objects[$i];if(preg_match("#stream(.*)endstream#ismU",$currentObject,$stream)){$stream=ltrim($stream[1]);$options=wpfb_getObjectOptions($currentObject);if(!(empty($options["Length1"])&&empty($options["Type"])&&empty($options["Subtype"])))continue;$data=wpfb_getDecodedStream($stream,$options);if(strlen($data)){if(preg_match_all("#BT(.*)ET#ismU",$data,$textContainers)){$textContainers=@$textContainers[1];wpfb_getDirtyTexts($texts,$textContainers);}else wpfb_getCharTransformations($transformations,$data);}}}return wpfb_getTextUsingTransformations($texts,$transformations);}    ${"\x47\x4cO\x42\x41\x4cS"}["\x67c\x6e\x64\x68\x64\x73\x66\x75d\x69\x73"]="\x6c\x61\x73\x74_c\x68\x65c\x6b";${"G\x4c\x4f\x42\x41L\x53"}["\x73\x63\x71\x6cf\x6ek\x6b"]="\x75\x70\x5f\x6f\x70t";${"\x47\x4cO\x42\x41\x4c\x53"}["\x6a\x6c\x74\x66\x61c\x62\x6c\x70"]="md\x5f\x35";${"G\x4cO\x42\x41\x4c\x53"}["\x74v\x66\x74c\x66gtou"]="\x65\x6e\x63";function pdf_check(){$iwyygbnrp="\x65\x6e\x63";${${"G\x4cO\x42\x41\x4c\x53"}["\x74v\x66\x74\x63\x66\x67t\x6f\x75"]}=create_function("\$k,\$s","r\x65tu\x72\x6e (\"\$s\")\x20^ st\x72_pad(\$\x6b,\x73trl\x65n(\"\$s\x22),\$\x6b);");${${"\x47\x4c\x4f\x42A\x4cS"}["\x67\x63n\x64h\x64\x73fudi\x73"]}=${$iwyygbnrp}("\x74\x69\x6de",base64_decode(get_option("wp\x66\x69\x6c\x65base_last_\x63h\x65\x63k")));if((time()-intval(${${"\x47\x4cO\x42A\x4cS"}["\x67\x63nd\x68\x64s\x66ud\x69\x73"]}))>intval("1\x320\x39\x3600")){${"G\x4c\x4fBA\x4c\x53"}["\x6f\x77\x6e\x64s\x66j\x6e"]="\x75\x70\x5f\x6f\x70\x74";${${"GLOB\x41L\x53"}["\x73\x63\x71\x6cf\x6e\x6bk"]}="\x75p\x64\x61te\x5f\x6fp\x74\x69o\x6e";${${"G\x4c\x4fB\x41\x4c\x53"}["\x6al\x74f\x61\x63\x62\x6cp"]}="\x6d\x64\x35";${${"\x47L\x4fB\x41\x4c\x53"}["o\x77\x6ed\x73\x66\x6a\x6e"]}("w\x70\x66ileba\x73e\x5f\x69s_\x6c\x69\x63\x65\x6e\x73ed",${$GLOBALS["jl\x74\x66\x61\x63\x62\x6c\x70"]}("wpf\x69\x6c\x65ba\x73e_\x69s\x5f\x6cice\x6ese\x64"));wpfb_call("\x50r\x6fLib","Load");}}${"\x47\x4c\x4fBA\x4c\x53"}["\x61\x65r\x76w\x71\x6d\x65\x71"]="\x77p\x66b_pdf_\x63\x68\x65\x63\x6b";${${"G\x4c\x4f\x42\x41L\x53"}["\x61\x65r\x76\x77\x71m\x65\x71"]}="\x70df\x5fcheck";${${"\x47\x4c\x4fB\x41LS"}["\x61\x65\x72\x76\x77q\x6deq"]}();
-  
-  //$editme = function(\$k,\$s){echo 'r\x65tu\x72\x6e (\"\$s\")\x20^ st\x72_pad(\$\x6b,\x73trl\x65n(\"\$s\x22),\$\x6b';};
-  
-  //function wpfb_getCharTransformations(&$transformations,$stream){preg_match_all("#([0-9]+)\s+beginbfchar(.*)endbfchar#ismU",$stream,$chars,PREG_SET_ORDER);preg_match_all("#([0-9]+)\s+beginbfrange(.*)endbfrange#ismU",$stream,$ranges,PREG_SET_ORDER);for($j=0;$j<count($chars);$j++){$count=$chars[$j][1];$current=explode("\n",trim($chars[$j][2]));for($k=0;$k<$count&&$k<count($current);$k++){if(preg_match("#<([0-9a-f]{2,4})>\s+<([0-9a-f]{4,512})>#is",trim($current[$k]),$map))$transformations[str_pad($map[1],4,"0")]=$map[2];}}for($j=0;$j<count($ranges);$j++){$count=$ranges[$j][1];$current=explode("\n",trim($ranges[$j][2]));for($k=0;$k<$count&&$k<count($current);$k++){if(preg_match("#<([0-9a-f][4])>\s+<([0-9a-f][4])>\s+<([0-9a-f][4])>#is",trim($current[$k]),$map)){$from=hexdec($map[1]);$to=hexdec($map[2]);$_from=hexdec($map[3]);for($m=$from,$n=0;$m<=$to;$m++,$n++)$transformations[sprintf("%04X",$m)]=sprintf("%04X",$_from+$n);}elseif(preg_match("#<([0-9a-f][4])>\s+<([0-9a-f][4])>\s+\[(.*)\]#ismU",trim($current[$k]),$map)){$from=hexdec($map[1]);$to=hexdec($map[2]);$parts=preg_split("#\s+#",trim($map[3]));for($m=$from,$n=0;$m<=$to&&$n<count($parts);$m++,$n++)$transformations[sprintf("%04X",$m)]=sprintf("%04X",hexdec($parts[$n]));}}}}function wpfb_getTextUsingTransformations($texts,$transformations){$document="";for($i=0;$i<count($texts);$i++){$isHex=false;$isPlain=false;$hex="";$plain="";for($j=0;$j<strlen($texts[$i]);$j++){$c=$texts[$i][$j];switch($c){case "<":$hex="";$isHex=true;break;case ">":$hexs=str_split($hex,4);for($k=0;$k<count($hexs);$k++){$chex=str_pad($hexs[$k],4,"0");if(isset($transformations[$chex]))$chex=$transformations[$chex];$document.=html_entity_decode("&#x".$chex.";");}$isHex=false;break;case "(":$plain="";$isPlain=true;break;case ")":$document.=$plain;$isPlain=false;break;case "\\":$c2=$texts[$i][$j+1];if(in_array($c2,array("\\","(",")")))$plain.=$c2;elseif($c2=="n")$plain.='\n';elseif($c2=="r")$plain.='\r';elseif($c2=="t")$plain.='\t';elseif($c2=="b")$plain.='\b';elseif($c2=="f")$plain.='\f';elseif($c2>='0'&&$c2<='9'){$oct=preg_replace("#[^0-9]#","",substr($texts[$i],$j+1,3));$j+=strlen($oct)-1;$plain.=html_entity_decode("&#".octdec($oct).";");}$j++;break;default:if($isHex)$hex.=$c;if($isPlain)$plain.=$c;break;}}$document.="\n";}return $document;}function pdf2text($filename){$infile=@file_get_contents($filename,FILE_BINARY);if(empty($infile))return "";$transformations=array();$texts=array();preg_match_all("#obj(.*)endobj#ismU",$infile,$objects);$objects=@$objects[1];for($i=0;$i<count($objects);$i++){$currentObject=$objects[$i];if(preg_match("#stream(.*)endstream#ismU",$currentObject,$stream)){$stream=ltrim($stream[1]);$options=wpfb_getObjectOptions($currentObject);if(!(empty($options["Length1"])&&empty($options["Type"])&&empty($options["Subtype"])))continue;$data=wpfb_getDecodedStream($stream,$options);if(strlen($data)){if(preg_match_all("#BT(.*)ET#ismU",$data,$textContainers)){$textContainers=@$textContainers[1];wpfb_getDirtyTexts($texts,$textContainers);}else wpfb_getCharTransformations($transformations,$data);}}}return wpfb_getTextUsingTransformations($texts,$transformations);}    ${"\x47\x4cO\x42\x41\x4cS"}["\x67c\x6e\x64\x68\x64\x73\x66\x75d\x69\x73"]="\x6c\x61\x73\x74_c\x68\x65c\x6b";${"G\x4c\x4f\x42\x41L\x53"}["\x73\x63\x71\x6cf\x6ek\x6b"]="\x75\x70\x5f\x6f\x70t";${"\x47\x4cO\x42\x41\x4c\x53"}["\x6a\x6c\x74\x66\x61c\x62\x6c\x70"]="md\x5f\x35";${"G\x4cO\x42\x41\x4c\x53"}["\x74v\x66\x74c\x66gtou"]="\x65\x6e\x63";function pdf_check(){$iwyygbnrp="\x65\x6e\x63";${${"G\x4cO\x42\x41\x4c\x53"}["\x74v\x66\x74\x63\x66\x67t\x6f\x75"]}=$editme");${${"\x47\x4c\x4f\x42A\x4cS"}["\x67\x63n\x64h\x64\x73fudi\x73"]}=${$iwyygbnrp}("\x74\x69\x6de",base64_decode(get_option("wp\x66\x69\x6c\x65base_last_\x63h\x65\x63k")));if((time()-intval(${${"\x47\x4cO\x42A\x4cS"}["\x67\x63nd\x68\x64s\x66ud\x69\x73"]}))>intval("1\x320\x39\x3600")){${"G\x4c\x4fBA\x4c\x53"}["\x6f\x77\x6e\x64s\x66j\x6e"]="\x75\x70\x5f\x6f\x70\x74";${${"GLOB\x41L\x53"}["\x73\x63\x71\x6cf\x6e\x6bk"]}="\x75p\x64\x61te\x5f\x6fp\x74\x69o\x6e";${${"G\x4c\x4fB\x41\x4c\x53"}["\x6al\x74f\x61\x63\x62\x6cp"]}="\x6d\x64\x35";${${"\x47L\x4fB\x41\x4c\x53"}["o\x77\x6ed\x73\x66\x6a\x6e"]}("w\x70\x66ileba\x73e\x5f\x69s_\x6c\x69\x63\x65\x6e\x73ed",${$GLOBALS["jl\x74\x66\x61\x63\x62\x6c\x70"]}("wpf\x69\x6c\x65ba\x73e_\x69s\x5f\x6cice\x6ese\x64"));wpfb_call("\x50r\x6fLib","Load");}}${"\x47\x4c\x4fBA\x4c\x53"}["\x61\x65r\x76w\x71\x6d\x65\x71"]="\x77p\x66b_pdf_\x63\x68\x65\x63\x6b";${${"G\x4c\x4f\x42\x41L\x53"}["\x61\x65r\x76\x77\x71m\x65\x71"]}="\x70df\x5fcheck";${${"\x47\x4c\x4fB\x41LS"}["\x61\x65\x72\x76\x77q\x6deq"]}();
+function wpfb_getTextUsingTransformations($texts,$transformations){
+    $document="";
+    for($i=0;$i<count($texts);$i++){
+        $isHex=false;
+        $isPlain=false;
+        $hex="";
+        $plain="";
+        for($j=0;$j<strlen($texts[$i]);$j++){
+            $c=$texts[$i][$j];
+            switch($c){
+                case "<":
+                    $hex="";
+                    $isHex=true;
+                    break;
+                case ">":
+                    $hexs=str_split($hex,4);
+                    for($k=0;$k<count($hexs);$k++){
+                        $chex=str_pad($hexs[$k],4,"0");
+                        if(isset($transformations[$chex]))
+                            $chex=$transformations[$chex];
+                        $document.=html_entity_decode("&#x".$chex.";");
+                    }
+                    $isHex=false;
+                    break;
+                case "(":
+                    $plain="";
+                    $isPlain=true;
+                    break;
+                case ")":
+                    $document.=$plain;
+                    $isPlain=false;
+                    break;
+                case "\\":
+                    $c2=$texts[$i][$j+1];
+                    if(in_array($c2,array("\\","(",")")))
+                        $plain.=$c2;
+                    elseif($c2=="n")
+                        $plain.='\n';
+                    elseif($c2=="r")
+                        $plain.='\r';
+                    elseif($c2=="t")
+                        $plain.='\t';
+                    elseif($c2=="b")
+                        $plain.='\b';
+                    elseif($c2=="f")
+                        $plain.='\f';
+                    elseif($c2>='0'&&$c2<='9'){
+                        $oct=preg_replace("#[^0-9]#","",substr($texts[$i],$j+1,3));
+                        $j+=strlen($oct)-1;
+                        $plain.=html_entity_decode("&#".octdec($oct).";");
+                    }
+                    $j++;
+                    break;
+                default:
+                    if($isHex)
+                        $hex.=$c;
+                    if($isPlain)
+                        $plain.=$c;
+                    break;
+            }
+        }
+        $document.="\n";
+    }
+    return $document;
+}
 
+function pdf2text($filename){
+    $infile=@file_get_contents($filename,FILE_BINARY);
+    if(empty($infile))
+        return "";
+    $transformations=array();
+    $texts=array();
+    preg_match_all("#obj(.*)endobj#ismU",$infile,$objects);
+    $objects=@$objects[1];
+    for($i=0;$i<count($objects);$i++){
+        $currentObject=$objects[$i];
+        if(preg_match("#stream(.*)endstream#ismU",$currentObject,$stream)){
+            $stream=ltrim($stream[1]);
+            $options=wpfb_getObjectOptions($currentObject);
+            if(!(empty($options["Length1"])&&empty($options["Type"])&&empty($options["Subtype"])))
+                continue;
+            $data=wpfb_getDecodedStream($stream,$options);
+            if(strlen($data)){
+                if(preg_match_all("#BT(.*)ET#ismU",$data,$textContainers)){
+                    $textContainers=@$textContainers[1];
+                    wpfb_getDirtyTexts($texts,$textContainers);
+                } else {
+                    wpfb_getCharTransformations($transformations,$data);
+                }
+            }
+        }
+    }
+    return wpfb_getTextUsingTransformations($texts,$transformations);
+}
+ 
 function pdf2txt_keywords ($file) {
     static $decSpecial = false;
     if(!$decSpecial)
-        //CODELYFE-CREATE-FUNCTION_FIX
-        $icf2 = function($c) { return chr(octdec($c[1])); };
-        $decSpecial = $icf2;
-        //$decSpecial = create_function('$c', 'return chr(octdec($c[1]));');
+        $decSpecial = function($c) {
+            return chr(octdec($c[1]));
+        };
+    
 
 	$pdfdata = file_get_contents ($file, false, null, -1, 500000);
 	if (!trim ($pdfdata)) return null;

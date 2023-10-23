@@ -285,23 +285,17 @@ class WPFB_ListTpl {
 		if($page_break && $this->ajax_scroll) {
 			wp_print_scripts('jquery');
 		  
-			//CODELYFE-CREATE-FUNCTION_FIX
-			$cfunthis1 = function($v) { return is_bool($v) ? ($v?1:0) : $v; };
-			$cfunthis2 = function($c) { return $c->cat_id; };
-
-			$ajax_data = array_merge(array_map($cfunthis1, (array)$this->current_list), array(
+			$ajax_data = array_merge(array_map(function($v) {
+				return is_bool($v) ? ($v ? 1 : 0) : $v;
+			}, (array)$this->current_list), array(
 				'wpfb_action' => 'list',
 				'tpl' => $this->tag,
-				'cats' => empty($categories) ? '' : implode(',',array_map($cfunthis2, $categories)),
-				'wpfb_list_page' => (max(1,(int)@$_GET['wpfb_list_page'])+1)
+				'cats' => empty($categories) ? '' : implode(',', array_map(function($c) {
+					return $c->cat_id;
+				}, $categories)),
+				'wpfb_list_page' => max(1, (int)@$_GET['wpfb_list_page']) + 1
 			));
-
-			//$ajax_data = array_merge(array_map(create_function('$v','return is_bool($v) ? ($v?1:0) : $v;'), (array)$this->current_list), array(
-			//	'wpfb_action' => 'list',
-			//	'tpl' => $this->tag,
-			//	'cats' => empty($categories) ? '' : implode(',',array_map(create_function('$c','return $c->cat_id;'), $categories)),
-			//	'wpfb_list_page' => (max(1,(int)@$_GET['wpfb_list_page'])+1)
-			//));
+			
 			
 			$content .= "<script type=\"text/javascript\">\n//<![CDATA[
 var list$uid = {loading:false,complete:false};

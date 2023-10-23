@@ -257,7 +257,7 @@ class getid3_id3v2 extends getid3_handler
 					$thisfile_id3v2['padding']['length'] = strlen($framedata);
 					$thisfile_id3v2['padding']['valid']  = true;
 					for ($i = 0; $i < $thisfile_id3v2['padding']['length']; $i++) {
-						if ($framedata[$i] != "\x00") {
+						if ($framedata{$i} != "\x00") {
 							$thisfile_id3v2['padding']['valid'] = false;
 							$thisfile_id3v2['padding']['errorpos'] = $thisfile_id3v2['padding']['start'] + $i;
 							$this->warning('Invalid ID3v2 padding found at offset '.$thisfile_id3v2['padding']['errorpos'].' (the remaining '.($thisfile_id3v2['padding']['length'] - $i).' bytes are considered invalid)');
@@ -319,7 +319,7 @@ class getid3_id3v2 extends getid3_handler
 
 					$len = strlen($framedata);
 					for ($i = 0; $i < $len; $i++) {
-						if ($framedata[$i] != "\x00") {
+						if ($framedata{$i} != "\x00") {
 							$thisfile_id3v2['padding']['valid'] = false;
 							$thisfile_id3v2['padding']['errorpos'] = $thisfile_id3v2['padding']['start'] + $i;
 							$this->warning('Invalid ID3v2 padding found at offset '.$thisfile_id3v2['padding']['errorpos'].' (the remaining '.($thisfile_id3v2['padding']['length'] - $i).' bytes are considered invalid)');
@@ -3608,10 +3608,10 @@ class getid3_id3v2 extends getid3_handler
 
 	public static function IsANumber($numberstring, $allowdecimal=false, $allownegative=false) {
 		for ($i = 0; $i < strlen($numberstring); $i++) {
-			if ((chr($numberstring[$i]) < chr('0')) || (chr($numberstring[$i]) > chr('9'))) {
-				if (($numberstring[$i] == '.') && $allowdecimal) {
+			if ((chr($numberstring{$i}) < chr('0')) || (chr($numberstring{$i}) > chr('9'))) {
+				if (($numberstring{$i} == '.') && $allowdecimal) {
 					// allowed
-				} elseif (($numberstring[$i] == '-') && $allownegative && ($i == 0)) {
+				} elseif (($numberstring{$i} == '-') && $allownegative && ($i == 0)) {
 					// allowed
 				} else {
 					return false;

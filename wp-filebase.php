@@ -1,12 +1,12 @@
 <?php
 
 /*
-  Plugin Name: WP-Filebase Pro Unlocked
-  Plugin URI:  https://wpfilebase.com/documentation/
-  Description: Adds a powerful downloads manager supporting file categories, download counter, widgets, sorted file lists and more to your WordPress blog. The orginal developer no longer supports this plugin. Codelyfe will keep it alive.
+  Plugin Name: WP-Filebase Pro
+  Plugin URI:  https://wpfilebase.com/
+  Description: Adds a powerful downloads manager supporting file categories, download counter, widgets, sorted file lists and more to your WordPress blog.
   Version:     3.4.32
-  Author:      Fabian Schlieper | Repaired by Codelyfe
-  Author URI:  https://codelyfe.github.io/
+  Author:      Fabian Schlieper
+  Author URI:  https://fabi.me/
   Domain Path: /languages
   Text Domain: wp-filebase
  */
@@ -106,12 +106,10 @@ if (!defined('WPFB')) {
      */
     function wpfb_callback($cl, $fnc)
     {
-        //CODELYFE-CREATE-FUNCTION_FIX
-        return function() use($cl, $fnc){
-            $p=func_get_args(); 
+        return function () use ($cl, $fnc) {
+            $p = func_get_args();
             return wpfb_call($cl, $fnc, $p, true);
         };
-        //return create_function('', '$p=func_get_args();return wpfb_call("' . $cl . '","' . $fnc . '",$p,true);');
     }
 
     function wpfilebase_init()
@@ -130,7 +128,7 @@ if (!defined('WPFB')) {
         define('WPFB_NO_CORE_INIT', true);
         wpfb_loadclass('Core', 'Admin', 'Setup');
         WPFB_Setup::OnActivateOrVerChange(empty(WPFB_Core::$settings->version) ? null : WPFB_Core::$settings->version);
-        //CODELYFE-DEACTIVATE_LICENSE wpfb_call('ProLib', 'Load');
+        //wpfb_call('ProLib', 'Load');
     }
 
     function wpfilebase_deactivate()
